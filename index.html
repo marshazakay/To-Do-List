@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>What to do today</title>
+    <style>
+    body {
+      font-family: verdana;
+    }
+    .container {
+      margin: 0 auto;
+      width: 60%;
+    }
+    .subtasks {
+      margin-left: 40px;
+    }
+    .subtasks li {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      font-size: 35px;
+      color: dimGray;
+      font-family: verdana;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 20px;
+      color: dimGray;
+      font-family: verdana;
+      margin: 0 auto;
+      width: 60%;
+    }
+    input[type="text"],
+    input[type="date"] {
+      padding: 10px;
+      border-radius: 20px;
+      border: 5px solid gainsBoro;
+      font-size: 20px;
+      color: dimGray;
+      font-family: verdana;
+    }
+
+    input[type="color"] {
+      padding: 15px;
+      border-radius: 20px;
+      border: 3px solid gainsBoro;
+      background-image: conic-gradient(blue, green, yellow, orange, red, purple, blue);
+    }
+
+    button {
+      padding: 7px;
+      border-radius: 10px;
+      border: 3px solid gainsBoro;
+      background-color: LightSteelBlue;
+      color: white;
+      font-size: 16px;
+      font-family: verdana;
+      margin-left: 2px;
+    }
+    button:hover {
+      background-color: steelBlue;
+    }
+    label {
+      color: dimGray;
+      font-size: 20px;
+      font-family: verdana;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+    .checkbox-style {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1> To Do List</h1>
+<div class="container">
+    <label for="task">Add:</label>
+    <input type="text" id="task" name="task" placeholder="Anything else?">
+    <input type="date" id="date" name="date">
+    <label for="color">Color:</label>
+    <input type="color" id="color" name="color">
+    <button type="button" onclick="addTask()">Add to list</button>
+</div>
+
+<ul id="task-list">
+    <li>
+        <input type="checkbox" name="task" onclick="checkOffTask(this)">
+        <label style="color: DarkCyan;">CISC 3130 HW</label>
+        <span>Due: <span class="date">2024-03-10</span></span>
+        <button class='edit' onclick="editTask(this.parentElement)">Edit</button>
+        <button class='delete' onclick="deleteTask(this.parentElement)">Delete</button>
+        <button class='add-subtask' onclick="addSubtask(this.parentElement)">Add Subtask</button>
+
+        <ul class="subtasks">
+            <li>
+                <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+                <label>Project</label>
+                <span>Due: <span id="subtask-date">2024-03-11</span></span>
+                <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+            </li>
+            <li>
+                <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+                <label>Essay</label>
+                <span>Due: <span id="subtask-date">2024-03-11</span></span>
+                <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <input type="checkbox" name="task" onclick="checkOffTask(this)">
+        <label style="color: DarkSeaGreen;">CISC 3650 HW</label>
+        <span>Due: <span class="date">2024-03-09</span></span>
+        <button class='edit' onclick="editTask(this.parentElement)">Edit</button>
+        <button class='delete' onclick="deleteTask(this.parentElement)">Delete</button>
+        <button class='add-subtask' onclick="addSubtask(this.parentElement)">Add Subtask</button>
+
+        <ul class="subtasks">
+            <li>
+                <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+                <label>Website Project</label>
+                <span>Due: <span id="subtask-date1">2024-03-09</span></span>
+                <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+            </li>
+            <li>
+                <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+                <label>Group Project</label>
+                <span>Due: <span id="subtask-date1">2024-03-09</span></span>
+                <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<script>
+    function addTask() {
+      let taskInput = document.getElementById("task");
+      let dateInput = document.getElementById("date");
+      let colorInput = document.getElementById("color");
+      let taskValue = taskInput.value;
+      let dateValue = dateInput.value;
+      let colorValue = colorInput.value;
+
+      let ul = document.getElementById("task-list");
+
+      let li = document.createElement("li");
+      li.innerHTML = `
+          <input type="checkbox" name="task" onclick="checkOffTask(this)">
+          <label style="color: ${colorValue}">${taskValue}</label>
+          <span>Due: <span class="date">${dateValue}</span></span>
+          <button class='edit' onclick="editTask(this.parentElement)">Edit</button>
+          <button class='delete' onclick="deleteTask(this.parentElement)">Delete</button>
+          <button class='add-subtask' onclick="addSubtask(this.parentElement)">Add Subtask</button>
+          <ul class="subtasks"></ul>
+      `;
+
+      ul.appendChild(li);
+
+      taskInput.value = "";
+      dateInput.value = "";
+      colorInput.value = "#000000";
+    }
+
+    function editTask(taskItem) {
+      let label = taskItem.querySelector("label");
+      let dateSpan = taskItem.querySelector(".date");
+
+      // Create input elements
+      let input = document.createElement("input");
+      input.type = "text";
+      input.value = label.textContent;
+
+      let dateInput = document.createElement("input");
+      dateInput.type = "date";
+      dateInput.value = dateSpan.textContent;
+
+      // Replace content with input elements
+      label.textContent = '';
+      label.appendChild(input);
+
+      dateSpan.textContent = '';
+      dateSpan.appendChild(dateInput);
+
+      // Create save button
+      let saveButton = document.createElement("button");
+      saveButton.className = 'edit';
+      saveButton.textContent = 'Save';
+      saveButton.onclick = function () {
+        label.textContent = input.value;
+        dateSpan.textContent = dateInput.value;
+
+        // Remove save button and restore edit button
+        taskItem.removeChild(saveButton);
+        taskItem.appendChild(editButton);
+      };
+
+      // Create edit button
+      let editButton = document.createElement("button");
+      editButton.className = 'edit';
+      editButton.textContent = 'Edit';
+      editButton.onclick = function () {
+        editTask(taskItem);
+      };
+
+      // Remove existing edit button
+      let existingEditButton = taskItem.querySelector('.edit');
+      if (existingEditButton) {
+        taskItem.removeChild(existingEditButton);
+      }
+
+      // Append save button
+      taskItem.appendChild(saveButton);
+    }
+
+    function deleteTask(taskItem) {
+      let ul = document.getElementById("task-list");
+      ul.removeChild(taskItem);
+    }
+
+    function addSubtask(taskItem) {
+      let subtasks = taskItem.querySelector(".subtasks");
+
+      let li = document.createElement("li");
+      li.innerHTML = `
+          <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+          <input type="text" placeholder="Subtask name">
+          <input type="date">
+          <button class='add-subtask-item' onclick="addSubtaskItem(this.parentElement)">Add</button>
+          <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+      `;
+
+      subtasks.appendChild(li);
+    }
+
+    function addSubtaskItem(subtaskItem) {
+      let subtaskNameInput = subtaskItem.querySelector('input[type="text"]');
+      let subtaskDateInput = subtaskItem.querySelector('input[type="date"]');
+
+      let ul = subtaskItem.parentElement;
+
+      let subtaskDetails = document.createElement("li");
+      subtaskDetails.innerHTML = `
+          <input type="checkbox" name="subtask" onclick="checkOffSubtask(this)">
+          <label>${subtaskNameInput.value}</label>
+          <span>Due: <span class="subtask-date">${subtaskDateInput.value}</span></span>
+          <button class='delete' onclick="deleteSubtask(this.parentElement)">Delete</button>
+      `;
+
+      ul.appendChild(subtaskDetails);
+
+      subtaskItem.remove();
+    }
+
+    function deleteSubtask(subtaskItem) {
+      let ul = subtaskItem.parentElement;
+      ul.removeChild(subtaskItem);
+    }
+
+    function checkOffTask(checkbox) {
+      let taskItem = checkbox.closest('li');
+      let subtasks = taskItem.querySelector(".subtasks");
+      let subtaskCheckboxes = subtasks.querySelectorAll('input[type="checkbox"]');
+      subtaskCheckboxes.forEach(subtaskCheckbox => {
+        subtaskCheckbox.checked = checkbox.checked;
+      });
+    }
+
+    function checkOffSubtask(checkbox) {
+      let subtaskItem = checkbox.parentElement;
+      let taskItem = subtaskItem.closest('li');
+      let taskCheckbox = taskItem.querySelector('input[type="checkbox"]');
+      let subtaskCheckboxes = taskItem.querySelector(".subtasks").querySelectorAll('input[type="checkbox"]');
+      let allChecked = true;
+      subtaskCheckboxes.forEach(subtaskCheckbox => {
+        if (!subtaskCheckbox.checked) {
+          allChecked = false;
+        }
+      });
+      taskCheckbox.checked = allChecked;
+    }
+  </script>
+
+</body>
+</html>
